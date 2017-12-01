@@ -1,20 +1,13 @@
-FROM ubuntu:12.04
+FROM ubuntu:14.04
 MAINTAINER Joseph Scavone
 ENV DEBIAN_FRONTEND noninteractive
 
-RUN \
-    echo 'APT::Get::Assume-Yes "true";' > /etc/apt/apt.conf.d/90forceyes ;\
-    echo 'deb http://archive.ubuntu.com/ubuntu trusty main universe restricted' > /etc/apt/sources.list ;\
-    echo 'deb http://archive.ubuntu.com/ubuntu trusty-updates  main universe restricted' >> /etc/apt/sources.list ;\
+RUN apt-get update ;\
+    apt-get install -y software-properties-common ;\
+    add-apt-repository ppa:brightbox/ruby-ng ;\
     apt-get update ;\
-    echo exit 101 > /usr/sbin/policy-rc.d && chmod +x /usr/sbin/policy-rc.d ;\
-    dpkg-divert --local --rename --add /sbin/initctl ;\
-    ln -sf /bin/true /sbin/initctl ;\
-    apt-get -y upgrade ;\
-    apt-get install -y tar python-software-properties build-essential curl libreadline-dev libcurl4-gnutls-dev libpq-dev libxml2-dev libxslt1-dev zlib1g-dev libssl-dev git-core ;\
+    apt-get install -y tar python-software-properties build-essential curl libreadline-dev libcurl4-gnutls-dev libpq-dev libxml2-dev libxslt1-dev zlib1g-dev libssl-dev git-core ruby2.3 ruby2.3-dev libgmp3-dev ;\
     apt-get clean
-
-RUN curl https://s3.amazonaws.com/pkgr-buildpack-ruby/current/ubuntu-14.04/ruby-2.2.0.tgz -o - | tar xzf - -C /usr/local
 
 RUN \
     cd /opt ;\
